@@ -67,7 +67,8 @@ class DB {
                     }
                     $x++;
                 }
-                if(!$this->query($sql,array($value))->error()){
+
+                if(!$this->query($sql,$value)->error()){
 					return $this;
                 }
             } 
@@ -87,6 +88,12 @@ class DB {
         }
         return false;
     }
+    public function results(){
+		return $this->_results;
+	}
+    public function error(){
+        return $this->_error;
+    }
 
-    
+
 }
