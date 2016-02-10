@@ -19,7 +19,7 @@ class DB {
             die($e->getMessage());
         }
         
-        
+         
     }     
     public static function getInstance(){
         if(!isset($_instance)){
@@ -27,4 +27,26 @@ class DB {
         }
         return self::$_instance;
     }
+    
+    public function query($sql,$params = array()){
+        $this->_error = false;
+        if($this->_query = $this->_pdo->prepare($sql)){
+            $x = 1;
+            if (count($params)){
+                foreach($params as $param){
+                    $this->_query->bindValue($x,$param);
+                    $x++;
+                }
+            }
+            if($this->_query->execute()){
+                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                $this->_count   = $this->_query->rowCount();
+            }
+            else{
+                $this->_error = true;
+            }
+        }
+        return $this;
+    }
+    
 }
