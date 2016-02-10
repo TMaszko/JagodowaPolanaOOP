@@ -48,5 +48,45 @@ class DB {
         }
         return $this;
     }
+    public function action($action,$table,$where=array()){
+        if(count($where) === 4){
+            $operators = array('=','>','<','>=','<=');
+            $tie_kinds = array('OR','AND');
+            $field 		= $where[0];
+			$operator 	= $where[1];
+			$value 		= $where[2];
+            $tie        = $where[3];
+            
+            if(in_array($operator,$operators) && in_array($tie,$tie_kinds)){
+                $sql = "{$action} FROM {$table} WHERE ";
+                $x = 1;
+                foreach($field as $f){
+                    $sql .= " {$f} {$operator} ?";
+                    if(count($field)>$x){
+                        $sql .= " {$tie} ";
+                    }
+                    $x++;
+                }
+                if(!$this->query($sql,array($value))->error()){
+					return $this;
+                }
+            } 
+        } else if (count($where) === 3){
+			$operators = array('=','>','<','>=','<=');
+			
+			$field 		= $where[0];
+			$operator 	= $where[1];
+			$value 		= $where[2];
+			
+			if(in_array($operator,$operators)){
+				$sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
+				if(!$this->query($sql,array($value))->error()){
+					return $this;
+                }
+            }
+        }
+        return false;
+    }
+
     
 }
