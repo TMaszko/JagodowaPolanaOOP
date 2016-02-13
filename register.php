@@ -1,96 +1,100 @@
 <?php
 require_once 'core/init.php';
-if(Input::exists()){
-    $validate = new Validate();
-    $first_validate = new Validate();
-    $validation = $first_validate->check($_POST,array(
-            'user_group' => array(
-                'required' => true
-            
-            )    
-    ));
-    if ($validation->passed()){
-        if(isset($_POST["typeOfUser"])){
-            if($_POST["typeOfUser"] == "hurtownik"){
-                $validation_hurt = $validate->check($_POST,array(
-			'username' => array(
-				'required'	=> true,
-				'min' 		=> 2,
-				'max' 		=> 20,
-				'unique' 	=> 'users' // unique to users table
-			),
-			'password' => array(
-				'required' 	=> true,
-				'min'		=> 6
 
-			),
-			'password_again'=> array(
-				'required' 	=> true,
-				'matches'  	=> 'password'
-			),
-			'name' => array(
-				'required' 	=> true,
-				'min' 		=> 2,
-				'max' 		=> 50
-			),
-            'phone_num' => array(
-                'required' =>true,
-                'max' > 9
-            )
-		));
-                if($validation_hurt->passed()){
-                 echo 'Tak jest szmato hurtownik da rade';
-                } else{
-                    foreach($validation_hurt->errors() as $error){
+if(Input::exists()){
+    if(Token::check(Input::get('token'))){ 
+        $validate = new Validate();
+        $first_validate = new Validate();
+        $validation = $first_validate->check($_POST,array(
+                'user_group' => array(
+                    'required' => true
+
+                )    
+        ));
+        if ($validation->passed()){
+            if(isset($_POST["typeOfUser"])){
+                if($_POST["typeOfUser"] == "hurtownik"){
+                    $validation_hurt = $validate->check($_POST,array(
+                'username' => array(
+                    'required'	=> true,
+                    'min' 		=> 2,
+                    'max' 		=> 20,
+                    'unique' 	=> 'users' // unique to users table
+                ),
+                'password' => array(
+                    'required' 	=> true,
+                    'min'		=> 6
+
+                ),
+                'password_again'=> array(
+                    'required' 	=> true,
+                    'matches'  	=> 'password'
+                ),
+                'name' => array(
+                    'required' 	=> true,
+                    'min' 		=> 2,
+                    'max' 		=> 50
+                ),
+                'phone_num' => array(
+                    'required' =>true,
+                    'max' > 9
+                )
+            ));
+                    if($validation_hurt->passed()){
+                     echo 'Hurtownik passed';
+                    } else{
+                        foreach($validation_hurt->errors() as $error){
+                            echo $error,'<br>';
+                        }
+                    }
+                } else if($_POST["typeOfUser"] == "robotnik"){
+                       $validation_work = $validate->check($_POST,array(
+                'username' => array(
+                    'required'	=> true,
+                    'min' 		=> 2,
+                    'max' 		=> 20,
+                    'unique' 	=> 'users' // unique to users table
+                ),
+                'password' => array(
+                    'required' 	=> true,
+                    'min'		=> 6
+
+                ),
+                'password_again'=> array(
+                    'required' 	=> true,
+                    'matches'  	=> 'password'
+                ),
+                'name' => array(
+                    'required' 	=> true,
+                    'min' 		=> 2,
+                    'max' 		=> 50
+                ),
+                'phone_num' => array(
+                    'max' > 9
+                )
+            ));
+                if($validation_work->passed()){
+                    echo 'Robotnik passed';
+                } else {
+                    foreach($validation_work->errors() as $error){
                         echo $error,'<br>';
                     }
                 }
-            } else if($_POST["typeOfUser"] == "robotnik"){
-                   $validation_work = $validate->check($_POST,array(
-			'username' => array(
-				'required'	=> true,
-				'min' 		=> 2,
-				'max' 		=> 20,
-				'unique' 	=> 'users' // unique to users table
-			),
-			'password' => array(
-				'required' 	=> true,
-				'min'		=> 6
-
-			),
-			'password_again'=> array(
-				'required' 	=> true,
-				'matches'  	=> 'password'
-			),
-			'name' => array(
-				'required' 	=> true,
-				'min' 		=> 2,
-				'max' 		=> 50
-			),
-            'phone_num' => array(
-                'max' > 9
-            )
-		));
-            if($validation_work->passed()){
-                echo 'Tak jest szmato robotnik da rade';
-            } else {
-                foreach($validation_work->errors() as $error){
-                    echo $error,'<br>';
                 }
             }
+        } else {
+            foreach($validation->errors() as $error){
+                echo $error,'<br>';
             }
         }
-    } else {
-        foreach($validation->errors() as $error){
-            echo $error,'<br>';
-        }
-    }
+    } else 
+        echo 'CSRF attack';
 }
 ?>
 <form action="" method="post">
 	<div class="field">
 		<label for="username">Username</label>
-		<input type="text" name="username" id="username" value="" autocomplete="off">
+		<input type="text" name="username" id="username" value="<?php echo Input::get('username');?>" autocomplete="off">
 	</div>
 	
 	<div class="field">
@@ -103,7 +107,7 @@ if(Input::exists()){
 	</div>
 	<div class="field">
 		<label for="name">Name</label>
-		<input type="text" name="name" value="" id="name">
+		<input type="text" name="name" value="<?php echo Input::get('name');?>" id="name">
 	</div>
 	    <div class="field">
         <label>Robotnik<input type="radio" name="user_group" class="usergroup" group="robotnik" ></label>
@@ -113,7 +117,7 @@ if(Input::exists()){
 	    <label id="phone" style="display:none;"></label>
 	</div>
 	    <input type="hidden" name="typeOfUser" id="typeOfUser" value="">
-		<input type= "hidden" name="token" value="">
+		<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 		<input type="submit"  value="Register">
 </form>
 <script>
