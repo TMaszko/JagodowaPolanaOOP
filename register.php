@@ -1,7 +1,6 @@
 <?php
 require_once 'core/init.php';
 if(Input::exists()){
-    echo $_POST["user_group"];
     $validate = new Validate();
     $first_validate = new Validate();
     $validation = $first_validate->check($_POST,array(
@@ -11,7 +10,6 @@ if(Input::exists()){
             )    
     ));
     if ($validation->passed()){
-        
         if(isset($_POST["typeOfUser"])){
             if($_POST["typeOfUser"] == "hurtownik"){
                 $validation_hurt = $validate->check($_POST,array(

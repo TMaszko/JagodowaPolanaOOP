@@ -11,7 +11,7 @@ class Validate{
     
     public function check($source, $items=array()){
         foreach($items as $item=>$rules){
-            $value = $source[$item];
+             (isset($source[$item]))? $value=$source[$item] : $value = null;
             $item = escape($item);
             
             foreach($rules as $rule=>$rule_value){        
