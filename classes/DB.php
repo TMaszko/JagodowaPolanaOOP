@@ -6,14 +6,11 @@ class DB {
             $_query,
             $_error = false,
             $_results,
-            $_count = 0,
-            $_options = array(
-    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-); 
+            $_count = 0;
+                
     private function __construct(){
         try{
-           $this->_pdo = new PDO('mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'),
-            $this->_options); 
+           $this->_pdo = new PDO('mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'));
             
         }   catch(PDOExcpetion $e){
             die($e->getMessage());
