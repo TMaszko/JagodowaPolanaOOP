@@ -12,9 +12,5 @@ if ($user->isLoggedIn()){
         <li><a href="logout.php">Log out!</a></li>
     </ul>
     
-    
-<?php    
-} else {
-    echo 'nope';
-}
+<?php }
 ?>
