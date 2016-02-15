@@ -41,7 +41,8 @@ if(Input::exists()){
                 )
             ));
                     if($validation_hurt->passed()){
-                     echo 'Hurtownik passed';
+                    Session::flash('success', 'You have been registered successfully');
+                    header('Location: index.php');
                     } else{
                         foreach($validation_hurt->errors() as $error){
                             echo $error,'<br>';
@@ -74,7 +75,8 @@ if(Input::exists()){
                 )
             ));
                 if($validation_work->passed()){
-                    echo 'Robotnik passed';
+                    Session::flash('success','You have been registered successfully');
+                    header('Location: index.php');
                 } else {
                     foreach($validation_work->errors() as $error){
                         echo $error,'<br>';
