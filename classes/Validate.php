@@ -9,13 +9,83 @@ class Validate{
 		$this->_db = DB::getInstance();
 	}
     
+    public function chooseSet($num){
+        switch($num){
+            case 2:
+                $fields = array(
+                    'username' => array(
+                        'required'	=> true,
+                        'min' 		=> 2,
+                        'max' 		=> 20,
+                        'unique' 	=> 'users' // unique to users table
+                ),
+                    'password' => array(
+                        'required' 	=> true,
+                        'min'		=> 6
+
+                ),
+                    'password_again'=> array(
+                        'required' 	=> true,
+                        'matches'  	=> 'password'
+                ),
+                    'name' => array(
+                        'required' 	=> true,
+                        'min' 		=> 2,
+                        'max' 		=> 50
+                ),
+                    'phone_num' => array(
+                        'required' =>true,
+                        'max' > 9
+                )
+            );
+                return $fields;
+                break;
+            
+            case 1:
+                $fields = array(
+                    'username' => array(
+                        'required'	=> true,
+                        'min' 		=> 2,
+                        'max' 		=> 20,
+                        'unique' 	=> 'users' // unique to users table
+                ),
+                    'password' => array(
+                        'required' 	=> true,
+                        'min'		=> 6
+
+                ),
+                    'password_again'=> array(
+                        'required' 	=> true,
+                        'matches'  	=> 'password'
+                ),
+                    'name' => array(
+                        'required' 	=> true,
+                        'min' 		=> 2,
+                        'max' 		=> 50
+                ),
+                    'phone_num' => array(
+                        'max' > 9
+                )
+            );
+                return $fields;
+                break;
+            default: 
+                $fields = array(
+                'user_group' => array(
+                    'required' => true
+                )); 
+                return $fields;
+                break;
+        }    
+        
+    }
+    
     public function check($source, $items=array()){
         foreach($items as $item=>$rules){
              (isset($source[$item]))? $value=$source[$item] : $value = null;
             $item = escape($item);
             
             foreach($rules as $rule=>$rule_value){        
-                
                 if($rule === 'required' && empty($value)){
                     $this->addError("{$item} is required");
 

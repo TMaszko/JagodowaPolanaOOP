@@ -5,41 +5,11 @@ if(Input::exists()){
     if(Token::check(Input::get('token'))){ 
         $validate = new Validate();
         $first_validate = new Validate();
-        $validation = $first_validate->check($_POST,array(
-                'user_group' => array(
-                    'required' => true
-
-                )    
-        ));
+        $validation = $first_validate->check($_POST,$first_validate->chooseSet(0));
         if ($validation->passed()){
             if(isset($_POST["typeOfUser"])){
                 if($_POST["typeOfUser"] == "hurtownik"){
-                    $validation_hurt = $validate->check($_POST,array(
-                'username' => array(
-                    'required'	=> true,
-                    'min' 		=> 2,
-                    'max' 		=> 20,
-                    'unique' 	=> 'users' // unique to users table
-                ),
-                'password' => array(
-                    'required' 	=> true,
-                    'min'		=> 6
-
-                ),
-                'password_again'=> array(
-                    'required' 	=> true,
-                    'matches'  	=> 'password'
-                ),
-                'name' => array(
-                    'required' 	=> true,
-                    'min' 		=> 2,
-                    'max' 		=> 50
-                ),
-                'phone_num' => array(
-                    'required' =>true,
-                    'max' > 9
-                )
-            ));
+                    $validation_hurt = $validate->check($_POST,$validate->chooseSet(2));
                     if($validation_hurt->passed()){
                         $user = new User();
                         $salt = Hash::salt(32);
@@ -70,31 +40,7 @@ if(Input::exists()){
                         }
                     }
                 } else if($_POST["typeOfUser"] == "robotnik"){
-                       $validation_work = $validate->check($_POST,array(
-                'username' => array(
-                    'required'	=> true,
-                    'min' 		=> 2,
-                    'max' 		=> 20,
-                    'unique' 	=> 'users' // unique to users table
-                ),
-                'password' => array(
-                    'required' 	=> true,
-                    'min'		=> 6
-
-                ),
-                'password_again'=> array(
-                    'required' 	=> true,
-                    'matches'  	=> 'password'
-                ),
-                'name' => array(
-                    'required' 	=> true,
-                    'min' 		=> 1,
-                    'max' 		=> 50
-                ),
-                'phone_num' => array(
-                    'max' > 9
-                )
-            ));
+                       $validation_work = $validate->check($_POST,$validate->chooseSet(1));
                 if($validation_work->passed()){
                     $user = new User();
                     $salt = Hash::salt(32);
