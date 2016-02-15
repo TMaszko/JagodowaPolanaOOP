@@ -1,6 +1,5 @@
 <?php
 require_once 'core/init.php';
-
 if(Input::exists()){
     if(Token::check(Input::get('token'))){ 
         $validate = new Validate();
@@ -41,8 +40,29 @@ if(Input::exists()){
                 )
             ));
                     if($validation_hurt->passed()){
-                    Session::flash('success', 'You have been registered successfully');
-                    header('Location: index.php');
+                        $user = new User();
+                        $salt = Hash::salt(32);
+                        try{
+                            
+                            $user->create(array(
+                                'username'  => Input::get('username'),
+                                'password'  => Hash::make(Input::get('password'), $salt),
+                                'salt'      => $salt,
+                                'name'      => Input::get('name'),
+                                'phone_num' => Input::get('phone_num'),
+                                'user_group'=> 2,
+                                'joined'    => date('Y-m-d H:i:s')
+                            
+                            
+                            
+                            
+                            ));
+                            Session::flash('home','You\'ve been registered successfully!');
+                            Redirect::to('index.php');
+                            
+                        }catch(Exception $e){
+                            die($e->getMessage());
+                        }
                     } else{
                         foreach($validation_hurt->errors() as $error){
                             echo $error,'<br>';
@@ -67,7 +87,7 @@ if(Input::exists()){
                 ),
                 'name' => array(
                     'required' 	=> true,
-                    'min' 		=> 2,
+                    'min' 		=> 1,
                     'max' 		=> 50
                 ),
                 'phone_num' => array(
@@ -75,8 +95,29 @@ if(Input::exists()){
                 )
             ));
                 if($validation_work->passed()){
-                    Session::flash('success','You have been registered successfully');
-                    header('Location: index.php');
+                    $user = new User();
+                    $salt = Hash::salt(32);
+                    try{
+
+                        $user->create(array(
+                            'username'  => Input::get('username'),
+                            'password'  => Hash::make(Input::get('password'), $salt),
+                            'salt'      => $salt,
+                            'name'      => Input::get('name'),
+                            'phone_num' => Input::get('phone_num'),
+                            'user_group'=> 1,
+                            'joined'    => date('Y-m-d H:i:s')
+
+
+
+
+                        ));
+                        Session::flash('home','You\'ve been registered successfully!');
+                        Redirect::to('index.php');
+
+                    }catch(Exception $e){
+                        die($e->getMessage());
+                    }    
                 } else {
                     foreach($validation_work->errors() as $error){
                         echo $error,'<br>';
@@ -112,7 +153,7 @@ if(Input::exists()){
 		<input type="text" name="name" value="<?php echo Input::get('name');?>" id="name">
 	</div>
 	    <div class="field">
-        <label>Robotnik<input type="radio" name="user_group" class="usergroup" group="robotnik" ></label>
+        <label>Robotnik<input type="radio" name="user_group" class="usergroup" group="robotnik"></label>
         <label>Hurtownik<input type="radio" name="user_group" class="usergroup" group="hurtownik"></label>
     </div>
     <div class="field">
@@ -129,7 +170,13 @@ var targetLabel = document.querySelector("#phone");
      targetLabel.style.transition = "all 1s ease";
     console.log(targetLabel);
 var typeOfUser =   document.querySelector("#typeOfUser");
-function checkGroup(){
+    window.addEventListener('load',function(){
+        for(var i = 0 ; i<inputGroup.length; i++){
+            inputGroup[i].removeAttribute("checked");
+        }
+    })
+    
+function checkGroupClick(){
     var xhttp = new XMLHttpRequest();
     if (this.checked){
         targetLabel.style.opacity = "0";
@@ -156,10 +203,11 @@ function checkGroup(){
         
     }
 }
-    
+     
 for(var i = 0 ; i< inputGroup.length; i++){
-        inputGroup[i].addEventListener('click',checkGroup);
+        inputGroup[i].addEventListener('click',checkGroupClick);
 }
+
 </script>
 
 
