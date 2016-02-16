@@ -35,11 +35,15 @@ if(Input::exists()){
       ));
     }
     if($validation->passed()){
-      $user->update(array(
+      try{
+        $user->update(array(
         'name'=> Input::get('name'),
         'phone_num' => Input::get('phone_num')
 
       ));
+    } catch(Exception $e){
+      die($e->getMessage());
+    }
       Session::flash('home','Your account was successfully updated!');
       Redirect::to('index.php');
 
