@@ -2,7 +2,7 @@
 require_once 'core/init.php';
 protect_page_login();
 if(Input::exists()){
-    if(Token::check(Input::get('token'))){ 
+    if(Token::check(Input::get('token'))){
         $validate = new Validate();
         $first_validate = new Validate();
         $validation = $first_validate->check($_POST,$first_validate->chooseSet(0));
@@ -14,7 +14,7 @@ if(Input::exists()){
                         $user = new User();
                         $salt = Hash::salt(32);
                         try{
-                            
+
                             $user->create(array(
                                 'username'  => Input::get('username'),
                                 'password'  => Hash::make(Input::get('password'), $salt),
@@ -23,14 +23,14 @@ if(Input::exists()){
                                 'phone_num' => Input::get('phone_num'),
                                 'user_group'=> 2,
                                 'joined'    => date('Y-m-d H:i:s')
-                            
-                            
-                            
-                            
+
+
+
+
                             ));
                             Session::flash('home','You\'ve been registered successfully!');
                             Redirect::to('index.php');
-                            
+
                         }catch(Exception $e){
                             die($e->getMessage());
                         }
@@ -50,6 +50,7 @@ if(Input::exists()){
                             'username'  => Input::get('username'),
                             'password'  => Hash::make(Input::get('password'), $salt),
                             'salt'      => $salt,
+                            'email'     => Input::get('email'),
                             'name'      => Input::get('name'),
                             'phone_num' => Input::get('phone_num'),
                             'user_group'=> 1,
@@ -64,7 +65,7 @@ if(Input::exists()){
 
                     }catch(Exception $e){
                         die($e->getMessage());
-                    }    
+                    }
                 } else {
                     foreach($validation_work->errors() as $error){
                         echo $error,'<br>';
@@ -77,38 +78,42 @@ if(Input::exists()){
                 echo $error,'<br>';
             }
         }
-    } else 
+    } else
         echo 'CSRF attack';
 }
 ?>
 <form action="" method="post">
-	<div class="field">
-		<label for="username">Username</label>
-		<input type="text" name="username" id="username" value="<?php echo Input::get('username');?>" autocomplete="off">
-	</div>
-	
-	<div class="field">
-		<label for="password">Choose a password</label>
-		<input type="password" name="password" id="password">
-	</div>
-	<div class="field">
-		<label for="password_again">Enter a password again</label>
-		<input type="password" name="password_again" id="password_again">
-	</div>
-	<div class="field">
-		<label for="name">Name</label>
-		<input type="text" name="name" value="<?php echo Input::get('name');?>" id="name">
-	</div>
-	    <div class="field">
+  <div class="field">
+    <label for="username">Username</label>
+    <input type="text" name="username" id="username" value="<?php echo Input::get('username');?>" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="password">Choose a password</label>
+    <input type="password" name="password" id="password">
+  </div>
+  <div class="field">
+    <label for="password_again">Enter a password again</label>
+    <input type="password" name="password_again" id="password_again">
+  </div>
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" name="email" value="<?php echo Input::get('email');?>" id="email">
+  </div>
+  <div class="field">
+    <label for="name">Name</label>
+    <input type="text" name="name" value="<?php echo Input::get('name');?>" id="name">
+  </div>
+      <div class="field">
         <label>Robotnik<input type="radio" name="user_group" class="usergroup" group="robotnik"></label>
         <label>Hurtownik<input type="radio" name="user_group" class="usergroup" group="hurtownik"></label>
     </div>
     <div class="field">
-	    <label id="phone" style="display:none;"></label>
-	</div>
-	    <input type="hidden" name="typeOfUser" id="typeOfUser" value="">
-		<input type="hidden" name="token" value="<?php echo Token::generate();?>">
-		<input type="submit"  value="Register">
+      <label id="phone" style="display:none;"></label>
+  </div>
+      <input type="hidden" name="typeOfUser" id="typeOfUser" value="">
+    <input type="hidden" name="token" value="<?php echo Token::generate();?>">
+    <input type="submit"  value="Register">
 </form>
 <script>
 var regBtn = document.querySelector("#registerBtn");
@@ -122,7 +127,7 @@ var typeOfUser =   document.querySelector("#typeOfUser");
             inputGroup[i].removeAttribute("checked");
         }
     })
-    
+
 function checkGroupClick(){
     var xhttp = new XMLHttpRequest();
     if (this.checked){
@@ -140,22 +145,19 @@ function checkGroupClick(){
                         targetLabel.style.opacity = "1";
                          targetLabel.innerHTML = "Phone : <input type='text' name='phone_num'>";
                         }
-                },2);   
+                },2);
                 typeOfUser.value = xhttp.responseText;
         };
-            
+
     }
     xhttp.open("GET", "register_ajax.php?q=" + this.getAttribute("group"), true);
     xhttp.send();
-        
+
     }
 }
-     
+
 for(var i = 0 ; i< inputGroup.length; i++){
         inputGroup[i].addEventListener('click',checkGroupClick);
 }
 
 </script>
-
-
-

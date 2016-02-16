@@ -3,12 +3,12 @@ class Validate{
     private $_passed =false,
             $_errors = array(),
 			$_db = null;
-    
-    
+
+
     public function __construct(){
 		$this->_db = DB::getInstance();
 	}
-    
+
     public function chooseSet($num){
         switch($num){
             case 2:
@@ -36,11 +36,16 @@ class Validate{
                     'phone_num' => array(
                         'required' =>true,
                         'max' > 9
-                )
+                ),
+                    'email' => array(
+                      'required' =>true,
+                      'email_passed' => true,
+                      'unique' => 'users'
+                    )
             );
                 return $fields;
                 break;
-            
+
             case 1:
                 $fields = array(
                     'username' => array(
@@ -65,27 +70,32 @@ class Validate{
                 ),
                     'phone_num' => array(
                         'max' > 9
+                ),
+                    'email' => array(
+                      'required' =>true,
+                      'email_passed' => true,
+                      'unique' => 'users'
                 )
             );
                 return $fields;
                 break;
-            default: 
+            default:
                 $fields = array(
                 'user_group' => array(
                     'required' => true
-                )); 
+                ));
                 return $fields;
                 break;
-        }    
-        
+        }
+
     }
-    
+
     public function check($source, $items=array()){
         foreach($items as $item=>$rules){
              (isset($source[$item]))? $value=$source[$item] : $value = null;
             $item = escape($item);
-            
-            foreach($rules as $rule=>$rule_value){        
+
+            foreach($rules as $rule=>$rule_value){
                 if($rule === 'required' && empty($value)){
                     $this->addError("{$item} is required");
 
@@ -109,10 +119,20 @@ class Validate{
                         break;
                         case 'unique':
                             $check = $this->_db->get($rule_value ,array($item, '=', $value));
-                                if($check ->count()){
-                                    $this->addError("{$item} already exists.");
+                              if($check ->count()){
+                                $this->addError("{$item} already exists.");
                                 }
                         break;
+                        case 'email_passed':
+                          if(filter_var($value,FILTER_VALIDATE_EMAIL) === false){
+                            $this->addError("Your {$item} is incorrect");
+                          }
+                        break;
+                        case 'active':
+                            $check = $this->_db->get('users',array(array($item,$rule),'=',array($value,$rule_value),'AND'));
+                            if(!$check->count()){
+                              $this->addError("You haven't activated your account");
+                            }
                     }
 
                 }
@@ -120,20 +140,20 @@ class Validate{
         }
         if(empty($this->_errors)){
 			$this->_passed = true;
-		} 
+		}
 		return $this;
 	}
-    
+
     private function addError($error){
 		$this->_errors[] = $error;
 	}
-    
+
 	public function errors(){
 		return $this->_errors;
 	}
-	
+
 	public function passed(){
 		return $this->_passed;
 	}
-                
+
 }
