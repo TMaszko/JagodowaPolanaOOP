@@ -28,12 +28,13 @@ if ($user->isLoggedIn()){
 
     <ul>
         <li><a href="logout.php">Log out!</a></li>
-        <li><a href="changepassword.php"></a></li>
+        <li><a href="changepassword.php">Change Password</a></li>
+        <li><a href="update.php">Update details</a></li>
     </ul>
 
 <?php } else{
 ?>
   <p> You need to <a href="login.php">Log in</a> or <a href="register.php">Register!</a>
 <?php
-}
+      }
 ?>

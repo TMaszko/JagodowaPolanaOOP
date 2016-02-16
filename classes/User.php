@@ -45,7 +45,16 @@ class User{
         }
         return false;
     }
+    public function update($fields=array(),$id = null){
+      if(!$id && $this->isLoggedIn()){
+        $id = $this->data()->id;
+      }
 
+      if(!$this->_db->update('users',$id,$fields)){
+        throw new Exception('There was a problem with updating your account.');
+      }
+
+    }
     public function login($username = null,$password = null, $remember = false){
         if(!$username && !$password && $this->exists()){
             Session::put($this->_sessionName,$this->data()->id);

@@ -94,7 +94,7 @@ if(Input::exists()){
 <form action="" method="post">
   <div class="field">
     <label for="username">Username</label>
-    <input type="text" name="username" id="username" value="<?php echo Input::get('username');?>" autocomplete="off">
+    <input type="text" name="username" id="username" value="<?php echo escape(Input::get('username'));?>" autocomplete="off">
   </div>
 
   <div class="field">
@@ -107,11 +107,11 @@ if(Input::exists()){
   </div>
   <div class="field">
     <label for="email">Email</label>
-    <input type="email" name="email" value="<?php echo Input::get('email');?>" id="email">
+    <input type="email" name="email" value="<?php echo escape(Input::get('email'));?>" id="email">
   </div>
   <div class="field">
     <label for="name">Name</label>
-    <input type="text" name="name" value="<?php echo Input::get('name');?>" id="name">
+    <input type="text" name="name" value="<?php echo escape(Input::get('name'));?>" id="name">
   </div>
       <div class="field">
         <label>Robotnik<input type="radio" name="user_group" class="usergroup" group="robotnik"></label>
