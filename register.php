@@ -13,12 +13,15 @@ if(Input::exists()){
                     if($validation_hurt->passed()){
                         $user = new User();
                         $salt = Hash::salt(32);
+                        $email_code = Hash::unique();
                         try{
 
                             $user->create(array(
                                 'username'  => Input::get('username'),
                                 'password'  => Hash::make(Input::get('password'), $salt),
                                 'salt'      => $salt,
+                                'email'     => Input::get('email'),
+                                'email_code'=> $email_code,
                                 'name'      => Input::get('name'),
                                 'phone_num' => Input::get('phone_num'),
                                 'user_group'=> 2,
@@ -28,7 +31,9 @@ if(Input::exists()){
 
 
                             ));
-                            Session::flash('home','You\'ve been registered successfully!');
+                            Session::flash('home','You\'ve been registered successfully! <br>
+                            The activation link has been send to your email!');
+                            Mail::email(Input::get('email'),'Hello'. Input::get('username').'!','Here is your activation link! <br> http://localhost/JagodowaPolanaOOP/activate.php?email='.Input::get('email').'&email_code='.$email_code);
                             Redirect::to('index.php');
 
                         }catch(Exception $e){
@@ -44,6 +49,7 @@ if(Input::exists()){
                 if($validation_work->passed()){
                     $user = new User();
                     $salt = Hash::salt(32);
+                    $email_code = Hash::unique();
                     try{
 
                         $user->create(array(
@@ -51,6 +57,7 @@ if(Input::exists()){
                             'password'  => Hash::make(Input::get('password'), $salt),
                             'salt'      => $salt,
                             'email'     => Input::get('email'),
+                            'email_code'=> $email_code,
                             'name'      => Input::get('name'),
                             'phone_num' => Input::get('phone_num'),
                             'user_group'=> 1,
@@ -60,7 +67,9 @@ if(Input::exists()){
 
 
                         ));
-                        Session::flash('home','You\'ve been registered successfully!');
+                        Session::flash('home','You\'ve been registered successfully! <br>
+                        The activation link has been send to your email!');
+                        Mail::email(Input::get('email'),'Hello'. Input::get('username').'!',"Here is your activation link! <br> http://localhost/JagodowaPolanaOOP/activate.php?email=".Input::get('email')."&email_code=" . $email_code);
                         Redirect::to('index.php');
 
                     }catch(Exception $e){
