@@ -6,8 +6,8 @@ To do :
 verify user email and add it to database (done)
 send an email with activation link (done),
 Change Password functionality
-Update Name and Phone Number functionality
-Forgot username or password functionality
+Update Name and Phone Number functionality (done)
+Forgot username or password functionality 
 --------------------------------------------
 */
 

@@ -1,5 +1,6 @@
 <?php
 require_once 'core/init.php';
+protect_page_notLogin();
 $user = new User();
 if(Input::exists()){
   if(Token::check(Input::get('token'))){
