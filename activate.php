@@ -5,7 +5,6 @@ if(Input::exists('get')){
     $email = Input::get('email');
     $email_code = Input::get('email_code');
     $check = DB::getInstance()->get('users',array(array('email','active'),'=',array($email,0),'AND'));
-    echo $check->first()->id;
     if(!$check->count()){
 
       ?>

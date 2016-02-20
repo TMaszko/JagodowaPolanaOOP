@@ -7,7 +7,7 @@ verify user email and add it to database (done)
 send an email with activation link (done),
 Change Password functionality
 Update Name and Phone Number functionality (done)
-Forgot username or password functionality 
+Forgot username or password functionality
 --------------------------------------------
 */
 
@@ -19,7 +19,7 @@ Forgot username or password functionality
 
 require_once 'core/init.php';
 if (Session::exists('home')){
-    echo Session::flash('home');
+    echo '<p>' . Session::flash('home') . '</p>';
 }
 $user = new User();
 if ($user->isLoggedIn()){
