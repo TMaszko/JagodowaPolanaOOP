@@ -22,7 +22,7 @@ if (Session::exists('home')){
     echo '<p>' . Session::flash('home') . '</p>';
 }
 $user = new User();
-if ($user->isLoggedIn()){
+if ($user->isLoggedIn() && !$user->isRecoveredPass()){
     echo 'Logged in';
     ?>
 
@@ -32,9 +32,13 @@ if ($user->isLoggedIn()){
         <li><a href="update.php">Update details</a></li>
     </ul>
 
-<?php } else{
+<?php } else if($user->isLoggedIn() && $user->isRecoveredPass()){
+        Redirect::to('changepassword.php?force=true');
+
+      } else {
 ?>
   <p> You need to <a href="login.php">Log in</a> or <a href="register.php">Register!</a>
+    <p> Forgotten your <a href="recover.php?mode=username">username</a> or <a href="recover.php?mode=password">password</a>?</p>
 <?php
       }
 ?>

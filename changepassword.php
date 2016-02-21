@@ -26,11 +26,13 @@ if(Input::exists()){
       if($user->data()->password !== Hash::make(Input::get('password_current'),$user->data()->salt)){
         echo 'Your current password is wrong';
       } else {
+
         $salt = Hash::salt(32);
         $user->update(array(
           'password' => Hash::make(Input::get('new_password'),$salt),
           'salt' => $salt
         ));
+        $user->update(array('password_recover'=>0));
         Session::flash('home','Your password has been changed!');
         Redirect::to('index.php');
       }
@@ -40,6 +42,10 @@ if(Input::exists()){
       }
     }
   }
+}
+if(Input::exists('get') && Input::get('force') == true){
+  echo 'You\'ve been forced to change your god damn password!';
+
 }
 
 ?>

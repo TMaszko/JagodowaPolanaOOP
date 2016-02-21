@@ -4,6 +4,7 @@ class User{
             $_data,
             $_sessionName,
             $_isLoggedIn,
+            $_recoveredPass,
             $_cookieName;
 
     public function __construct($user = null){
@@ -18,11 +19,17 @@ class User{
             }
             if($this->find($user)){
                 $this->_isLoggedIn = true;
+                if($this->data()->password_recover == 1){
+                  $this->_recoveredPass = 1;
+                }
             } else {
                 //process logout
             }
         } else {
             $this->find($user);
+            if($this->data()->password_recover == 1){
+              $this->_recoveredPass = 1;
+            }
         }
 
     }
@@ -94,6 +101,23 @@ class User{
         return false;
     }
 
+    public function recovery($type,$email){
+      ($type != 'username') ? $typeMessage = 'password': $typeMessage = 'username';
+      if($typeMessage == 'password'){
+        $salt = Hash::salt(32);
+        $hash = Hash::unique();
+        $password = substr($hash,1,8);
+        $password_db = Hash::make($password,$salt);
+        Mail::email($email,'Hello'. $this->data()->username.'!','<br>
+        Here is your forgotten '. $typeMessage .': '. $password);
+        $this->update(array('password'=>$password_db,'salt'=>$salt,'password_recover' => 1),$this->data()->id);
+      } else if($typeMessage == 'username') {
+          Mail::email($email,'Hello'. Input::get('username').'!','<br>
+          Here is your forgotten '. $typeMessage .': '.$this->data()->username);
+      }
+    }
+
+
     public function exists(){
         return (!empty($this->_data)) ? true : false;
     }
@@ -110,6 +134,9 @@ class User{
 
     public function isLoggedIn(){
         return $this->_isLoggedIn;
+    }
+    public function isRecoveredPass(){
+      return $this->_recoveredPass;
     }
 
 }
