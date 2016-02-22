@@ -126,8 +126,11 @@ class DB {
             }
             $x++;
         }
-
+        ($table !== 'users') ?
+        $sql = "UPDATE {$table} SET {$set} WHERE user_id = {$id}"
+        :
         $sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
+
 
         if (!$this->query($sql,$fields)->error()){
 			return true;

@@ -33,5 +33,10 @@ if(Cookie::exists(Config::get('remember/cookie_name'))
     if($hashCheck->count()){
         $user = new User($hashCheck->first()->user_id);
         $user->login();
+        $hash_unique = Hash::unique();
+
+        DB::getInstance()->update('users_session',$user->data()->id,array('hash'=> $hash_unique));
+        Cookie::update(Config::get('remember/cookie_name'),$hash_unique,Config::get('remember/cookie_expiry'));
+
     }
 }
